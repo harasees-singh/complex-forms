@@ -1,19 +1,25 @@
 import { useState } from 'react'
-const useInput = () => {
-    const [inputIsValid, setInputIsValid] = useState(false);
-    const [touch, setTouch] = useState(false);
-    const [inputIsNotValid, setInputIsNotValid] = useState(null);
+const useInput = (isValid) => {
+    const [enteredName, setEnteredName] = useState('');
+	const [touch, setTouch] = useState(false);
+	// const [formIsValid, setFormIsValid] = useState(false);
 
-    const onChange = (event) => {
-        setTouch(true);
-        setInputIsValid(event.target.value.trim().length !== 0);
-        setInputIsNotValid(event.target.value.trim().length === 0);
+	const enteredNameIsValid = isValid(enteredName);
+	const nameInputIsNotValid = !enteredNameIsValid && touch;
+
+	const onChange = (event) => {
+		setEnteredName(event.target.value.trim());
+	}
+
+    const reset = () => {
+        setTouch(false);
+        setEnteredName('');
     }
-    const onBlur = () => {
-        // console.log('blur')
-        // inputIsNotValid = !(inputIsValid);
-        setInputIsNotValid(!inputIsValid);
-    }
-    return [inputIsNotValid, onChange, onBlur, setInputIsNotValid, setTouch, inputIsValid];
+	
+	const blurHandler = () => {
+		// console.log(enteredName.length);
+		setTouch(true);
+	}
+    return {blurHandler:blurHandler, onChange:onChange, enteredVal:enteredName, inputIsNotValid:nameInputIsNotValid, reset:reset};
 }
 export default useInput;
