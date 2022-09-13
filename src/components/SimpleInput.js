@@ -1,6 +1,8 @@
 import useInput from '../hooks/use-input';
-const SimpleInput = (props) => {
-	const nameIsValid = (name) => name.trim() !== '';
+import { forwardRef, useImperativeHandle } from 'react';
+const SimpleInput = forwardRef((props, ref) => {
+	
+	const nameIsValid = props.isValid;
 	const {
 		blurHandler: blurNameHandler,
 		onChange: onNameChange,
@@ -8,36 +10,30 @@ const SimpleInput = (props) => {
 		inputIsNotValid: nameInputIsNotValid,
 		reset: resetNameHandler
 	} = useInput(nameIsValid);
-
-	const submitHandler = (event) => {
-		// setTouch(true);
-		blurNameHandler();
-		event.preventDefault();
-		if (!nameIsValid(enteredName)) {
-			return;
-		}
-		console.log('submitted!');
-		resetNameHandler();
-	}
-
+	
 	const nameInputClasses = !nameInputIsNotValid ? 'form-control' : 'form-control invalid';
+	
+	
+	useImperativeHandle(ref, () => {
+		console.log(props.title)
+		return {
+			resetNameHandler,
+			nameInputIsNotValid,
+			blurNameHandler
+		}
+	}, [nameInputIsNotValid, blurNameHandler, resetNameHandler])
 	return (
-		<form>
-			<div className={nameInputClasses}>
-				<label htmlFor='name'>Your Name</label>
-				<input type='text'
-					id='name'
-					onChange={onNameChange}
-					value={enteredName}
-					onBlur={blurNameHandler}
-				/>
-				{nameInputIsNotValid && <p className='error-text'>Name must not be empty</p>}
-			</div>
-			<div className="form-actions">
-				<button onClick={submitHandler}>Submit</button>
-			</div>
-		</form>
+		<div className={nameInputClasses}>
+			<label htmlFor={props.id}>Your {props.title}</label>
+			<input type={props.type}
+				id={props.id}
+				onChange={onNameChange}
+				value={enteredName}
+				onBlur={blurNameHandler}
+			/>
+			{nameInputIsNotValid && <p className='error-text'>Name must not be empty</p>}
+		</div>
 	);
-};
+});
 
 export default SimpleInput;
