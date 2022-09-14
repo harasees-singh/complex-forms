@@ -13,9 +13,7 @@ const SimpleInput = forwardRef((props, ref) => {
 	
 	const nameInputClasses = !nameInputIsNotValid ? 'form-control' : 'form-control invalid';
 	
-	
 	useImperativeHandle(ref, () => {
-		console.log(props.title)
 		return {
 			resetNameHandler,
 			nameInputIsNotValid,
